@@ -4,26 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>7 e Mezzo - Napoletane Edition</title>
+    <title>Sette e Mezzo - Napoletane</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --app-height: 100%;
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #064e3b;
+            background-color: #052e16;
             height: 100vh;
             height: 100dvh;
+            margin: 0;
             overflow: hidden;
-            /* Impedisce il pull-to-refresh su mobile */
             overscroll-behavior-y: contain;
         }
         .felt-bg {
-            background: radial-gradient(circle at center, #065f46 0%, #052e16 100%);
-            box-shadow: inset 0 0 150px rgba(0,0,0,0.7);
+            background: 
+                radial-gradient(circle at 50% 50%, #065f46 0%, #052e16 100%),
+                url('https://www.transparenttextures.com/patterns/felt.png');
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
         }
-        /* Ottimizzazione per tap rapidi su mobile */
-        button {
-            touch-action: manipulation;
+        /* Animazione per le carte che entrano */
+        .card-enter {
+            animation: cardSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes cardSlideIn {
+            from { transform: translateY(50px) rotate(10deg); opacity: 0; }
+            to { transform: translateY(0) rotate(0); opacity: 1; }
         }
         .safe-pb { padding-bottom: env(safe-area-inset-bottom); }
         .safe-pt { padding-top: env(safe-area-inset-top); }
