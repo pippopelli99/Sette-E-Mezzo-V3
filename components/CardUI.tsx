@@ -20,9 +20,22 @@ const CardUI: React.FC<CardUIProps> = ({ card, hidden = false }) => {
     }
   };
 
-  // Percorso relativo alla cartella 'cards' nella root
-  // Esempio: ./cards/1_denari.jpg
-  const imagePath = `./cards/${card.rank}_${getSuitName(card.suit)}.jpg`;
+  const getRankFileName = (rank: number) => {
+    switch (rank) {
+      case 8: return 'fante';
+      case 9: return 'cavallo';
+      case 10: return 're';
+      default: return rank.toString();
+    }
+  };
+
+  // Costruisce il nome del file in base alle nuove specifiche:
+  // 1-7: "valore_seme.jpg" (es. "1_denari.jpg")
+  // 8: "fante_seme.jpg"
+  // 9: "cavallo_seme.jpg"
+  // 10: "re_seme.jpg"
+  const fileName = `${getRankFileName(card.rank)}_${getSuitName(card.suit)}.jpg`;
+  const imagePath = `./cards/${fileName}`;
   const backImagePath = `./cards/back.jpg`;
 
   const containerClasses = "relative w-14 md:w-20 aspect-[1/1.6] rounded-sm overflow-hidden shadow-lg transition-all duration-300 ring-1 ring-black/20 bg-white";
@@ -53,23 +66,20 @@ const CardUI: React.FC<CardUIProps> = ({ card, hidden = false }) => {
           alt={`${card.name} di ${getSuitName(card.suit)}`}
           className="w-full h-full object-cover"
           onError={() => {
-            console.warn(`Immagine mancante: ${imagePath}. Controlla il nome del file nella cartella /cards/`);
+            console.warn(`Immagine mancante: ${imagePath}. Controlla che il file sia in /cards/ e si chiami esattamente ${fileName}`);
             setImgError(true);
           }}
         />
       ) : (
-        // Fallback se l'immagine non esiste: mostra testo per aiutare il debug
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-900 p-1 border-2 border-red-200">
           <span className="text-[10px] font-bold leading-none">{card.rank}</span>
           <span className="text-[8px] uppercase font-black opacity-30 mt-1">{getSuitName(card.suit)}</span>
-          <span className="text-[6px] text-red-500 mt-2 font-bold">MISSING JPG</span>
+          <span className="text-[6px] text-red-500 mt-2 font-bold text-center">FILE ERRATO</span>
         </div>
       )}
       
-      {/* Effetto luce superficiale */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-black/10 via-transparent to-white/20" />
       
-      {/* Evidenziatore per il Re di Denari (La Matta) */}
       {card.isMatta && (
         <div className="absolute inset-0 ring-2 ring-yellow-400 ring-inset animate-pulse pointer-events-none shadow-[inset_0_0_15px_rgba(250,204,21,0.5)]" />
       )}
