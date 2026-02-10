@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Suit } from '../types';
 
 interface CardUIProps {
@@ -8,7 +8,8 @@ interface CardUIProps {
 }
 
 const CardUI: React.FC<CardUIProps> = ({ card, hidden = false }) => {
-  // Mappatura dei semi per corrispondere ai nomi dei tuoi file JPG
+  const [imgError, setImgError] = useState(false);
+
   const getSuitName = (suit: Suit) => {
     switch (suit) {
       case Suit.COINS: return 'denari';
@@ -19,32 +20,26 @@ const CardUI: React.FC<CardUIProps> = ({ card, hidden = false }) => {
     }
   };
 
-  // Costruisce il nome del file: es. "1_denari.jpg"
-  // Assicurati che i file siano in una cartella chiamata 'cards'
-  const imagePath = `/cards/${card.rank}_${getSuitName(card.suit)}.jpg`;
-  
-  // Immagine per il dorso della carta (da aggiungere nella cartella cards)
-  const backImagePath = '/cards/back.jpg';
+  // Percorso relativo alla cartella 'cards' nella root
+  // Esempio: ./cards/1_denari.jpg
+  const imagePath = `./cards/${card.rank}_${getSuitName(card.suit)}.jpg`;
+  const backImagePath = `./cards/back.jpg`;
 
-  // Dimensioni ottimizzate per il formato napoletano (più strette e lunghe)
-  // Utilizziamo aspect-ratio per mantenere la proporzione corretta
-  const containerClasses = "relative w-14 md:w-20 aspect-[1/1.6] rounded-sm overflow-hidden shadow-md md:shadow-xl transition-all duration-300 ring-1 ring-black/10";
+  const containerClasses = "relative w-14 md:w-20 aspect-[1/1.6] rounded-sm overflow-hidden shadow-lg transition-all duration-300 ring-1 ring-black/20 bg-white";
 
   if (hidden) {
     return (
-      <div className={`${containerClasses} bg-emerald-900`}>
+      <div className={`${containerClasses} bg-emerald-900 ring-emerald-700`}>
         <img 
           src={backImagePath} 
           alt="Dorso"
           className="w-full h-full object-cover"
           onError={(e) => {
-            // Fallback se l'immagine del dorso manca
-            (e.target as HTMLImageElement).style.display = 'none';
+            (e.target as HTMLImageElement).style.opacity = '0';
           }}
         />
-        {/* Fallback visuale se l'immagine manca */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
-           <span className="text-xl font-black text-white">7½</span>
+        <div className="absolute inset-0 flex items-center justify-center opacity-30">
+           <span className="text-xl font-black text-emerald-300">7½</span>
         </div>
       </div>
     );
@@ -52,23 +47,31 @@ const CardUI: React.FC<CardUIProps> = ({ card, hidden = false }) => {
 
   return (
     <div className={containerClasses}>
-      <img 
-        src={imagePath} 
-        alt={`${card.name} di ${getSuitName(card.suit)}`}
-        className="w-full h-full object-cover"
-        loading="lazy"
-        onError={(e) => {
-          // Fallback se l'immagine della carta manca (mostra un placeholder bianco)
-          (e.target as HTMLImageElement).src = 'https://placehold.co/100x160/ffffff/000000?text=' + card.rank;
-        }}
-      />
+      {!imgError ? (
+        <img 
+          src={imagePath} 
+          alt={`${card.name} di ${getSuitName(card.suit)}`}
+          className="w-full h-full object-cover"
+          onError={() => {
+            console.warn(`Immagine mancante: ${imagePath}. Controlla il nome del file nella cartella /cards/`);
+            setImgError(true);
+          }}
+        />
+      ) : (
+        // Fallback se l'immagine non esiste: mostra testo per aiutare il debug
+        <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-900 p-1 border-2 border-red-200">
+          <span className="text-[10px] font-bold leading-none">{card.rank}</span>
+          <span className="text-[8px] uppercase font-black opacity-30 mt-1">{getSuitName(card.suit)}</span>
+          <span className="text-[6px] text-red-500 mt-2 font-bold">MISSING JPG</span>
+        </div>
+      )}
       
-      {/* Overlay sottile per dare profondità */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-black/5 via-transparent to-white/10" />
+      {/* Effetto luce superficiale */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-black/10 via-transparent to-white/20" />
       
-      {/* Evidenziazione per la Matta */}
+      {/* Evidenziatore per il Re di Denari (La Matta) */}
       {card.isMatta && (
-        <div className="absolute inset-0 ring-2 ring-yellow-400 ring-inset animate-pulse pointer-events-none" />
+        <div className="absolute inset-0 ring-2 ring-yellow-400 ring-inset animate-pulse pointer-events-none shadow-[inset_0_0_15px_rgba(250,204,21,0.5)]" />
       )}
     </div>
   );

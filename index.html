@@ -3,36 +3,30 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>7 e Mezzo - Pro Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>7 e Mezzo - Napoletane Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --app-height: 100%;
-        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #064e3b; /* Emerald 900 */
-            /* Fix per mobile browsers height */
+            background-color: #064e3b;
             height: 100vh;
             height: 100dvh;
             overflow: hidden;
+            /* Impedisce il pull-to-refresh su mobile */
+            overscroll-behavior-y: contain;
         }
         .felt-bg {
-            background: radial-gradient(circle, #065f46 0%, #064e3b 100%);
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+            background: radial-gradient(circle at center, #065f46 0%, #052e16 100%);
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.7);
         }
-        .card-font {
-            font-family: 'Crimson Pro', serif;
+        /* Ottimizzazione per tap rapidi su mobile */
+        button {
+            touch-action: manipulation;
         }
-        /* Gestione safe area per iPhone */
-        .safe-pb {
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        .safe-pt {
-            padding-top: env(safe-area-inset-top);
-        }
+        .safe-pb { padding-bottom: env(safe-area-inset-bottom); }
+        .safe-pt { padding-top: env(safe-area-inset-top); }
     </style>
 <script type="importmap">
 {
